@@ -8,15 +8,20 @@ public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] float runSpeed = 10F;
     [SerializeField] float jumpSpeed = 5F;
+    [SerializeField] float climbSpeed = 5F;
 
     Vector2 moveInput; // Vector2 is movement on X&Y axis, Vector3 is movement on X,Y,&Z axis
     Rigidbody2D myRigidbody;
     Animator myAnimator;
+    CapsuleCollider2D myCapsuleCollider;
+    float gravityScaleAtStart;
 
     void Start()
     {
         myRigidbody = GetComponent<Rigidbody2D>();
         myAnimator = GetComponent<Animator>();
+        myCapsuleCollider = GetComponent<CapsuleCollider2D>();
+        gravityScaleAtStart = myRigidbody.gravityScale;
     }
 
 
@@ -24,6 +29,7 @@ public class PlayerMovement : MonoBehaviour
     {
         Run();
         FlipSprite();
+        ClimbLadder();
     }
 
     void OnMove(InputValue value)
@@ -33,6 +39,8 @@ public class PlayerMovement : MonoBehaviour
 
     void OnJump(InputValue value) 
     {
+        if (!myCapsuleCollider.IsTouchingLayers(LayerMask.GetMask("Ground"))) { return; } // escape from OnJump() if player collider notTouching ground layerMask collider
+
         if(value.isPressed)
         {
             myRigidbody.velocity += new Vector2 (0F, jumpSpeed);
@@ -64,5 +72,22 @@ public class PlayerMovement : MonoBehaviour
             // Mathf.Sign returns sign of F; return value is 1 when F is positive or "0", -1 when F is negative
             // applies this returned 1 or -1 to transform.localScale, x axis
         }
+    }
+
+    void ClimbLadder()
+    {
+        if (!myCapsuleCollider.IsTouchingLayers(LayerMask.GetMask("Climbing"))) // can't climb if not touching a ladder
+        {
+            myRigidbody.gravityScale = gravityScaleAtStart;
+            myAnimator.SetBool("isClimbing", false);
+            return; 
+        }
+        
+        Vector2 climbVelocity = new Vector2(myRigidbody.velocity.x, moveInput.y * climbSpeed);
+        myRigidbody.velocity = climbVelocity;
+        myRigidbody.gravityScale = 0F;
+
+        bool playerHasVerticalSpeed = Mathf.Abs(myRigidbody.velocity.y) > Mathf.Epsilon;
+        myAnimator.SetBool("isClimbing", playerHasVerticalSpeed);
     }
 }
