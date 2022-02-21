@@ -13841,14 +13841,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4196882844471065660, guid: f8d7e07c9cadedd4fb686f81293623e4, type: 3}
-      propertyPath: m_SortingLayer
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4196882844471065660, guid: f8d7e07c9cadedd4fb686f81293623e4, type: 3}
-      propertyPath: m_SortingOrder
-      value: 5
-      objectReference: {fileID: 0}
     - target: {fileID: 4196882844471065663, guid: f8d7e07c9cadedd4fb686f81293623e4, type: 3}
       propertyPath: m_Name
       value: FrankSamson (Player)
