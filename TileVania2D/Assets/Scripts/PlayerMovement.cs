@@ -13,14 +13,16 @@ public class PlayerMovement : MonoBehaviour
     Vector2 moveInput; // Vector2 is movement on X&Y axis, Vector3 is movement on X,Y,&Z axis
     Rigidbody2D myRigidbody;
     Animator myAnimator;
-    CapsuleCollider2D myCapsuleCollider;
+    CapsuleCollider2D myBodyCollider;
+    BoxCollider2D myFeetCollider;
     float gravityScaleAtStart;
 
     void Start()
     {
         myRigidbody = GetComponent<Rigidbody2D>();
         myAnimator = GetComponent<Animator>();
-        myCapsuleCollider = GetComponent<CapsuleCollider2D>();
+        myBodyCollider = GetComponent<CapsuleCollider2D>();
+        myFeetCollider = GetComponent<BoxCollider2D>();
         gravityScaleAtStart = myRigidbody.gravityScale;
     }
 
@@ -39,7 +41,7 @@ public class PlayerMovement : MonoBehaviour
 
     void OnJump(InputValue value) 
     {
-        if (!myCapsuleCollider.IsTouchingLayers(LayerMask.GetMask("Ground"))) { return; } // escape from OnJump() if player collider notTouching ground layerMask collider
+        if (!myFeetCollider.IsTouchingLayers(LayerMask.GetMask("Ground"))) { return; } // escape from OnJump() if player collider notTouching ground layerMask collider
 
         if(value.isPressed)
         {
@@ -76,7 +78,7 @@ public class PlayerMovement : MonoBehaviour
 
     void ClimbLadder()
     {
-        if (!myCapsuleCollider.IsTouchingLayers(LayerMask.GetMask("Climbing"))) // can't climb if not touching a ladder
+        if (!myFeetCollider.IsTouchingLayers(LayerMask.GetMask("Climbing"))) // can't climb if not touching a ladder
         {
             myRigidbody.gravityScale = gravityScaleAtStart;
             myAnimator.SetBool("isClimbing", false);
